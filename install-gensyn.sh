@@ -108,14 +108,12 @@ else
     echo -e "[python3 指向 python3.12] 设置完成 $CHECK_MARK"
 fi
 
-# 5. 检查并克隆仓库
-if [ -d "rl-swarm" ]; then
-    echo -e "[仓库已存在] $CHECK_MARK"
-else
-    git clone https://github.com/gensyn-ai/rl-swarm
-    echo -e "[仓库克隆完成] $CHECK_MARK"
+# 5. 确认在项目目录中
+if [ ! -f "run_rl_swarm.sh" ]; then
+    echo -e "[错误] 请在 rl-swarm 项目根目录中运行此脚本 $CROSS_MARK"
+    exit 1
 fi
-cd rl-swarm
+echo -e "[项目目录确认] 已在正确目录中 $CHECK_MARK"
 
 # 6. 检查并创建虚拟环境
 if [ -d "venv" ]; then
@@ -125,11 +123,6 @@ else
     echo -e "[虚拟环境创建完成] $CHECK_MARK"
 fi
 source venv/bin/activate
-
-# 修复已知依赖冲突问题
-echo "修复已知依赖冲突..."
-pip install --force-reinstall transformers==4.51.3 trl==0.19.1
-echo -e "[依赖修复] 完成 $CHECK_MARK"
 
 # 7. 设置环境变量并运行脚本
 export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0
