@@ -383,14 +383,32 @@ exec $user_shell
 stop_nexus() {
     log "停止Nexus进程..."
     
-    # 查找并终止nexus进程
-    pids=$(pgrep -f "$PROCESS_NAME")
-    if [ -n "$pids" ]; then
-        echo "$pids" | xargs kill -9
-        log "已终止进程: $pids"
-    else
-        log "未找到运行中的进程"
+    # 只查找并终止nexus相关进程，避免影响其他项目
+    log "🔍 查找并清理nexus相关进程..."
+    
+    # 清理真正的nexus-cli进程
+    local nexus_cli_pids=$(pgrep -f "^nexus-cli" 2>/dev/null)
+    if [ -n "$nexus_cli_pids" ]; then
+        log "🧹 终止nexus-cli进程: $nexus_cli_pids"
+        echo "$nexus_cli_pids" | xargs kill -9 2>/dev/null || true
     fi
+    
+    # 清理nexus-network进程
+    local nexus_network_pids=$(pgrep -f "nexus-network" 2>/dev/null)
+    if [ -n "$nexus_network_pids" ]; then
+        log "🧹 终止nexus-network进程: $nexus_network_pids"
+        echo "$nexus_network_pids" | xargs kill -9 2>/dev/null || true
+    fi
+    
+    # 清理可能的其他nexus相关进程
+    local other_nexus_pids=$(ps aux | grep -i nexus | grep -v "auto-nexus.sh" | grep -v grep | awk '{print $2}')
+    if [ -n "$other_nexus_pids" ]; then
+        log "🧹 清理其他nexus相关进程: $other_nexus_pids"
+        echo "$other_nexus_pids" | xargs kill -9 2>/dev/null || true
+    fi
+    
+    # 不再无差别清理所有进程，只针对nexus
+    log "✅ Nexus进程清理完成"
     
     # 等待进程完全停止
     sleep 2
