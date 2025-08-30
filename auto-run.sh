@@ -94,7 +94,7 @@ setup_screen_session() {
         
         # 立即启动程序（使用默认配置，无交互）
         echo "[🚀 设置] 启动RL Swarm程序（使用默认配置）..."
-        STARTUP_CMD='if [ -z "$VIRTUAL_ENV" ]; then source venv/bin/activate; fi; export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 && export PYTORCH_ENABLE_MPS_FALLBACK=1 && export HUGGINGFACE_ACCESS_TOKEN="None" && export PRG_GAME=true; (echo "N"; echo ""; echo "") | ./run_rl_swarm.sh\n'
+        STARTUP_CMD='if [ -z "$VIRTUAL_ENV" ]; then source venv/bin/activate; fi; export PIP_USER=false && export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 && export PYTORCH_ENABLE_MPS_FALLBACK=1 && export HUGGINGFACE_ACCESS_TOKEN="None" && export PRG_GAME=true; (echo "N"; echo ""; echo "") | ./run_rl_swarm.sh\n'
         screen -S "$SESSION_NAME" -p 0 -X stuff "$STARTUP_CMD"
         sleep 8
         
@@ -201,7 +201,7 @@ execute_restart() {
     echo "[🚀 重启] 直接启动RL Swarm（使用默认配置）..."
     
     # 设置环境变量使用默认值，自动回答所有交互问题
-    RESTART_CMD='if [ -z "$VIRTUAL_ENV" ]; then source venv/bin/activate; fi; export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 && export PYTORCH_ENABLE_MPS_FALLBACK=1 && export HUGGINGFACE_ACCESS_TOKEN="None" && export PRG_GAME=true; (echo "N"; echo ""; echo "") | ./run_rl_swarm.sh\n'
+    RESTART_CMD='if [ -z "$VIRTUAL_ENV" ]; then source venv/bin/activate; fi; export PIP_USER=false && export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 && export PYTORCH_ENABLE_MPS_FALLBACK=1 && export HUGGINGFACE_ACCESS_TOKEN="None" && export PRG_GAME=true; (echo "N"; echo ""; echo "") | ./run_rl_swarm.sh\n'
     screen -S "$SESSION_NAME" -p 0 -X stuff "$RESTART_CMD"
     sleep 8
     
